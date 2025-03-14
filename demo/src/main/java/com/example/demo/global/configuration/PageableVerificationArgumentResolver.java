@@ -1,11 +1,15 @@
 package com.example.demo.global.configuration;
 
+import com.example.demo.global.enums.PageSize;
+import com.example.demo.global.enums.PageSortBy;
+import org.springframework.data.domain.Pageable;
 import java.util.Arrays;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.data.web.SortArgumentResolver;
 import org.springframework.data.web.SortHandlerMethodArgumentResolver;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
