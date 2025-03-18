@@ -1,0 +1,53 @@
+package on.logistics.deliverymanagerservice.domain.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import on.logistics.deliverymanagerservice.global.domain.BaseEntity;
+
+@Getter
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "p_delivery_manager")
+public class DeliveryManager extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false)
+    private UUID userId;
+
+    @Column(nullable = false)
+    private UUID hubId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DeliveryType type;
+
+    @Column(nullable = false)
+    private Integer sequence;
+
+    private LocalDateTime lastAssignedAt;
+
+    @Builder
+    private DeliveryManager(UUID userId, UUID hubId, DeliveryType type, Integer sequence,
+        LocalDateTime lastAssignedAt) {
+        this.userId = userId;
+        this.hubId = hubId;
+        this.type = type;
+        this.sequence = sequence;
+        this.lastAssignedAt = lastAssignedAt;
+    }
+}
