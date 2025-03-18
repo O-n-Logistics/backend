@@ -3,6 +3,7 @@ package on.logistics.deliverymanagerservice.application.service;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import on.logistics.deliverymanagerservice.application.dtos.CreateDeliveryManagerRequestDto;
+import on.logistics.deliverymanagerservice.application.dtos.UpdateDeliveryManagerRequestDto;
 import on.logistics.deliverymanagerservice.domain.entity.DeliveryManager;
 import on.logistics.deliverymanagerservice.domain.entity.DeliveryType;
 import on.logistics.deliverymanagerservice.domain.entity.dtos.CreateDeliveryManagerDto;
@@ -11,6 +12,7 @@ import on.logistics.deliverymanagerservice.exception.DeliveryManagerException;
 import on.logistics.deliverymanagerservice.exception.DeliveryManagerExceptionCode;
 import on.logistics.deliverymanagerservice.presentation.dtos.response.CreateDeliveryManagerResponse;
 import on.logistics.deliverymanagerservice.presentation.dtos.response.GetDeliveryManagerResponse;
+import on.logistics.deliverymanagerservice.presentation.dtos.response.UpdateDeliveryManagerResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,19 @@ public class DeliveryManagerService {
         DeliveryManager deliveryManager = DeliveryManager.create(createDeliveryManagerDto);
         DeliveryManager savedDeliveryManager = deliveryManagerRepository.save(deliveryManager);
         return CreateDeliveryManagerResponse.of(savedDeliveryManager.getId());
+    }
+
+    @Transactional
+    public UpdateDeliveryManagerResponse updateDeliveryManager(
+        UpdateDeliveryManagerRequestDto requestDto) {
+        DeliveryManager deliveryManager = findDeliveryManagerById(requestDto.deliveryManagerId());
+        if (deliveryManager.getType() == requestDto.deliveryType()) {
+            throw new DeliveryManagerException(DeliveryManagerExceptionCode.SAME_DELIVERY_TYPE);
+        }
+        int sequence = getAssignedSequence(deliveryManager.getHubId(), requestDto.deliveryType());
+        deliveryManager.update(requestDto.deliveryType(), sequence);
+        // TODO: 추후 실제 유저 정보 넣어주기
+        return UpdateDeliveryManagerResponse.of(deliveryManager, "김배달", "kim delivery");
     }
 
     private DeliveryManager findDeliveryManagerById(UUID id) {

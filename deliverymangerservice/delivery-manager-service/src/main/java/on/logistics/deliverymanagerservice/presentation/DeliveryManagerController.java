@@ -4,15 +4,19 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import on.logistics.deliverymanagerservice.application.dtos.CreateDeliveryManagerRequestDto;
+import on.logistics.deliverymanagerservice.application.dtos.UpdateDeliveryManagerRequestDto;
 import on.logistics.deliverymanagerservice.application.service.DeliveryManagerService;
 import on.logistics.deliverymanagerservice.global.presentation.dtos.CommonResponse;
 import on.logistics.deliverymanagerservice.presentation.dtos.request.CreateDeliveryManagerRequest;
+import on.logistics.deliverymanagerservice.presentation.dtos.request.UpdateDeliveryManagerRequest;
 import on.logistics.deliverymanagerservice.presentation.dtos.response.CreateDeliveryManagerResponse;
 import on.logistics.deliverymanagerservice.presentation.dtos.response.GetDeliveryManagerResponse;
+import on.logistics.deliverymanagerservice.presentation.dtos.response.UpdateDeliveryManagerResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,6 +40,15 @@ public class DeliveryManagerController {
         @RequestBody @Valid CreateDeliveryManagerRequest createDeliveryManagerRequest) {
         final var requestDto = CreateDeliveryManagerRequestDto.of(createDeliveryManagerRequest);
         final var responseDto = deliveryManagerService.createDeliveryManager(requestDto);
+        return ResponseEntity.ok(CommonResponse.success(responseDto));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CommonResponse<UpdateDeliveryManagerResponse>> updateDeliveryManager(
+        @PathVariable UUID id,
+        @RequestBody @Valid UpdateDeliveryManagerRequest updateDeliveryManagerRequest) {
+        final var requestDto = UpdateDeliveryManagerRequestDto.of(id, updateDeliveryManagerRequest);
+        final var responseDto = deliveryManagerService.updateDeliveryManager(requestDto);
         return ResponseEntity.ok(CommonResponse.success(responseDto));
     }
 }
