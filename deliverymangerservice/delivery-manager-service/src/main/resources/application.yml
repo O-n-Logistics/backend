@@ -1,3 +1,17 @@
 spring:
   application:
     name: delivery-manager-service
+
+  datasource:
+    url: ENC(FWTpgqN/ecUdslZLRbpZsjIlvzNhK8HgBUPKlyWzTO1T13K5g02NkorMDQHYnT61hQIRIfbtjKKmaprYsm5zSw==)
+    username: ENC(QMAWl0YgoBa9M9qnDp4+wglVvgY22uoi)
+    password: ENC(VMkEagWvPmJfgIeZ6iHYHA==)
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
