@@ -7,7 +7,10 @@ import on.logistics.deliverymanagerservice.domain.entity.DeliveryManager;
 import on.logistics.deliverymanagerservice.domain.entity.DeliveryType;
 import on.logistics.deliverymanagerservice.domain.entity.dtos.CreateDeliveryManagerDto;
 import on.logistics.deliverymanagerservice.domain.entity.repository.DeliveryManagerRepository;
+import on.logistics.deliverymanagerservice.exception.DeliveryManagerException;
+import on.logistics.deliverymanagerservice.exception.DeliveryManagerExceptionCode;
 import on.logistics.deliverymanagerservice.presentation.dtos.response.CreateDeliveryManagerResponse;
+import on.logistics.deliverymanagerservice.presentation.dtos.response.GetDeliveryManagerResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeliveryManagerService {
 
     private final DeliveryManagerRepository deliveryManagerRepository;
+
+    @Transactional(readOnly = true)
+    public GetDeliveryManagerResponse getDeliveryManager(UUID id) {
+        DeliveryManager deliveryManager = findDeliveryManagerById(id);
+        // TODO: 추후 실제 유저 정보 넣어주기
+        return GetDeliveryManagerResponse.of(deliveryManager, "김배달", "kim delivery");
+    }
 
     @Transactional
     public CreateDeliveryManagerResponse createDeliveryManager(
@@ -26,6 +36,12 @@ public class DeliveryManagerService {
         DeliveryManager deliveryManager = DeliveryManager.create(createDeliveryManagerDto);
         DeliveryManager savedDeliveryManager = deliveryManagerRepository.save(deliveryManager);
         return CreateDeliveryManagerResponse.of(savedDeliveryManager.getId());
+    }
+
+    private DeliveryManager findDeliveryManagerById(UUID id) {
+        return deliveryManagerRepository.findByIdAndIsDeleted(id, false)
+            .orElseThrow(() -> new DeliveryManagerException(
+                DeliveryManagerExceptionCode.DELIVERY_MANAGER_NOT_FOUND));
     }
 
     private Integer getAssignedSequence(UUID hubId, DeliveryType deliveryType) {

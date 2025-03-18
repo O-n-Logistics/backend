@@ -26,4 +26,9 @@ public class DeliveryManagerRepositoryImpl implements DeliveryManagerRepository 
         return deliveryManagerJpaRepository.findMaxSequenceByHubIdAndType(hubId,
             deliveryType);
     }
+
+    @Override
+    public Optional<DeliveryManager> findByIdAndIsDeleted(UUID id, boolean isDeleted) {
+        return deliveryManagerJpaRepository.findByIdAndIsDeleted(id, isDeleted);
+    }
 }

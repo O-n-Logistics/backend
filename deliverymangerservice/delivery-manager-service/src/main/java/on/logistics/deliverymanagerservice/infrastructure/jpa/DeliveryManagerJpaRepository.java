@@ -10,4 +10,6 @@ public interface DeliveryManagerJpaRepository extends JpaRepository<DeliveryMana
 
     Optional<DeliveryManager> findMaxSequenceByHubIdAndType(UUID hubId, DeliveryType deliveryType);
 
+    Optional<DeliveryManager> findByIdAndIsDeleted(UUID id, boolean isDeleted);
+
 }
