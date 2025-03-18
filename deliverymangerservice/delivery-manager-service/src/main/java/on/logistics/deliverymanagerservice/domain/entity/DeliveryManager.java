@@ -65,4 +65,8 @@ public class DeliveryManager extends BaseEntity {
         this.type = type;
         this.sequence = sequence;
     }
+
+    public void delete() {
+        deleteSoftly();
+    }
 }

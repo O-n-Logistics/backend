@@ -13,6 +13,7 @@ import on.logistics.deliverymanagerservice.presentation.dtos.response.CreateDeli
 import on.logistics.deliverymanagerservice.presentation.dtos.response.GetDeliveryManagerResponse;
 import on.logistics.deliverymanagerservice.presentation.dtos.response.UpdateDeliveryManagerResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,5 +51,11 @@ public class DeliveryManagerController {
         final var requestDto = UpdateDeliveryManagerRequestDto.of(id, updateDeliveryManagerRequest);
         final var responseDto = deliveryManagerService.updateDeliveryManager(requestDto);
         return ResponseEntity.ok(CommonResponse.success(responseDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<CommonResponse<Void>> deleteDeliveryManager(@PathVariable UUID id) {
+        deliveryManagerService.deleteDeliveryManager(id);
+        return ResponseEntity.ok(CommonResponse.success());
     }
 }

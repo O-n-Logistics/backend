@@ -53,6 +53,12 @@ public class DeliveryManagerService {
         return UpdateDeliveryManagerResponse.of(deliveryManager, "김배달", "kim delivery");
     }
 
+    @Transactional
+    public void deleteDeliveryManager(final UUID id) {
+        DeliveryManager deliveryManager = findDeliveryManagerById(id);
+        deliveryManager.delete();
+    }
+
     private DeliveryManager findDeliveryManagerById(UUID id) {
         return deliveryManagerRepository.findByIdAndIsDeleted(id, false)
             .orElseThrow(() -> new DeliveryManagerException(
