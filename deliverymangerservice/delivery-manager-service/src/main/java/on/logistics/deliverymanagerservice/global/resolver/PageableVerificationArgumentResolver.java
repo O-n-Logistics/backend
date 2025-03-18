@@ -1,12 +1,12 @@
 package on.logistics.deliverymanagerservice.global.resolver;
 
 import jakarta.annotation.Nullable;
-import on.logistics.hubservice.global.enums.PageNumber;
-import on.logistics.hubservice.global.enums.PageSize;
-import on.logistics.hubservice.global.enums.PageSortBy;
-import on.logistics.hubservice.global.exception.pageable.PageableException.InvalidPageNumberException;
-import on.logistics.hubservice.global.exception.pageable.PageableException.InvalidPageSizeException;
-import on.logistics.hubservice.global.exception.pageable.PageableException.InvalidSortByException;
+import on.logistics.deliverymanagerservice.global.enums.PageNumber;
+import on.logistics.deliverymanagerservice.global.enums.PageSize;
+import on.logistics.deliverymanagerservice.global.enums.PageSortBy;
+import on.logistics.deliverymanagerservice.global.exception.pageable.PageableException.InvalidPageNumberException;
+import on.logistics.deliverymanagerservice.global.exception.pageable.PageableException.InvalidPageSizeException;
+import on.logistics.deliverymanagerservice.global.exception.pageable.PageableException.InvalidSortByException;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

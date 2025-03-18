@@ -1,6 +1,6 @@
 package on.logistics.deliverymanagerservice.global.exception.pageable;
 
-import on.logistics.hubservice.global.exception.CustomException;
+import on.logistics.deliverymanagerservice.global.exception.CustomException;
 
 public class PageableException extends CustomException {
 
