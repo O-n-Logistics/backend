@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import on.logistics.deliverymanagerservice.domain.entity.dtos.CreateDeliveryManagerDto;
 import on.logistics.deliverymanagerservice.global.domain.BaseEntity;
 
 @Getter
@@ -49,5 +50,14 @@ public class DeliveryManager extends BaseEntity {
         this.type = type;
         this.sequence = sequence;
         this.lastAssignedAt = lastAssignedAt;
+    }
+
+    public static DeliveryManager create(CreateDeliveryManagerDto dto) {
+        return DeliveryManager.builder()
+            .userId(dto.userId())
+            .hubId(dto.hubId())
+            .type(dto.deliveryType())
+            .sequence(dto.sequence())
+            .build();
     }
 }
