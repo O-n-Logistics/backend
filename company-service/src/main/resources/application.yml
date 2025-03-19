@@ -1,0 +1,22 @@
+server:
+  port: 8900
+spring:
+  application:
+    name: company-service
+  datasource:
+    url: ENC(LF1EYTubGmz9oUtP1dsRBB57YRt7yiGk89cwn2ZZGYSjuiCwBuLEIcvnhI14ajzva6JpCnKfFK4=)
+    username: ENC(SxLjFrGaBdXilneU8KB5/MHMAa0wlH48)
+    password: ENC(G3qnSA/3v8HGtR1FkXoJW6PcEjd2nYdC)
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+eureka:
+  client:
+    service-url:
+      defaultZone: ENC(8CMG1UOFeRePDmZd8M5MRmqiiwKhV8iGKbaKrOcm1uS4OaEpRRiCdw==)

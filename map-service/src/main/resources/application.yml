@@ -1,0 +1,25 @@
+server:
+  port: 19600
+
+spring:
+  application:
+    name: map-service
+  profiles:
+    active: dev
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    root: INFO
+
+jasypt:
+  encryptor:
+    password: ${jasypt.encryptor.password}
