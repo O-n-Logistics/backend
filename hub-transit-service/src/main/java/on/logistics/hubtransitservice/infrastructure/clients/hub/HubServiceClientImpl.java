@@ -36,9 +36,9 @@ public class HubServiceClientImpl implements HubServiceClient {
     public GetHubResponse getHubByName(String hubName) {
         log.info("허브 전체 조회 요청, filtering by hubName: {}", hubName);
         Response response = hubServiceFeignClient.getAllHubs();
-        try (InputStream is = response.body().asInputStream()) {
+        try (InputStream inputStream = response.body().asInputStream()) {
             CommonResponse<PageDto<GetHubResponse>> commonResponse = objectMapper.readValue(
-                is, new TypeReference<>() {
+                inputStream, new TypeReference<>() {
                 }
             );
             PageDto<GetHubResponse> pageDto = commonResponse.data();

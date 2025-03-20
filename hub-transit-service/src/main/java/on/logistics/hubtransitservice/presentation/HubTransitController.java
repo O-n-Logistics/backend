@@ -10,7 +10,6 @@ import on.logistics.hubtransitservice.application.dtos.create.CreateNextHubTrans
 import on.logistics.hubtransitservice.application.dtos.read.GetHubTransitResponseDto;
 import on.logistics.hubtransitservice.application.dtos.read.NextHubTransitRequestDto;
 import on.logistics.hubtransitservice.application.dtos.read.NextHubTransitResponseDto;
-import on.logistics.hubtransitservice.application.dtos.read.SearchHubTransitRequestDto;
 import on.logistics.hubtransitservice.application.dtos.read.SearchHubTransitResponseDto;
 import on.logistics.hubtransitservice.application.dtos.update.UpdateHubTransitRequestDto;
 import on.logistics.hubtransitservice.application.dtos.update.UpdateHubTransitResponseDto;
@@ -68,13 +67,11 @@ public class HubTransitController {
 
     @GetMapping("/search")
     public ResponseEntity<CommonResponse<PageDto<SearchHubTransitResponseDto>>> searchHubTransit(
-        @RequestParam(required = false) UUID deliveryId,
-        @RequestParam(required = false) String currentHubName,
-        @PageableDefault Pageable pageable
+        @RequestParam(required = false) String keyword, @PageableDefault Pageable pageable
     ) {
-        final var requestDto = SearchHubTransitRequestDto.of(deliveryId, currentHubName, pageable);
-        final var responseDto = hubTransitService.searchHubTransit(requestDto, pageable);
-        return ResponseEntity.ok(CommonResponse.success(PageDto.from(responseDto)));
+        final var resultPage = hubTransitService.searchHubTransit(keyword, pageable);
+        final var pageDto = PageDto.from(resultPage);
+        return ResponseEntity.ok(CommonResponse.success(pageDto));
     }
 
     @GetMapping("/next")

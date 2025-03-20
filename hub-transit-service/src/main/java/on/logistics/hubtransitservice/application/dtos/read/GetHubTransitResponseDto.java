@@ -9,6 +9,7 @@ public record GetHubTransitResponseDto(
     String currentHubName,
     UUID nextHubId,
     String nextHubName,
+    String nextDestinationType,
     UUID deliveryId,
     UUID deliveryManagerId
 ) {
@@ -20,6 +21,7 @@ public record GetHubTransitResponseDto(
             hubTransit.getCurrentHubName().getValue(),
             hubTransit.getNextHubId(),
             hubTransit.getNextHubName().getValue(),
+            hubTransit.getNextDestinationType(),
             hubTransit.getDeliveryId(),
             hubTransit.getDeliveryManagerId()
         );

@@ -4,15 +4,13 @@ server:
 spring:
   application:
     name: map-service
-  profiles:
-    active: dev
 
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://eureka-server:8761/eureka/
+      defaultZone: ENC(W6Nx/GCD2YwGm0YTroZvsTxinFS0V7ruJ62QLyPUCN0Gws7Pl+FEHQ==)
   instance:
     prefer-ip-address: true
 
@@ -22,4 +20,11 @@ logging:
 
 jasypt:
   encryptor:
-    password: ${jasypt.encryptor.password}
+    password:
+
+naver:
+  map:
+    api:
+      key: ENC(1gy/3hWPPjt1tEtucbEelVgDBUpxp9yq)
+      secret: ENC(9s2ooheLpz/mxl3ors7XCpzbSE28oZlabG/rSe3yQWrcJO66OI/WgON3ZfzufNH+RTiDWiFsms0=)
+      url: ENC(POEhT1xpRsNza5reNnAI6tEPhAGVxW1GZQtWZyeiK5uqh234HKL2bFswiCcJAMhg)

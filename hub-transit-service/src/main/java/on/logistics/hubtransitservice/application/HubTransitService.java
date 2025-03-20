@@ -8,7 +8,6 @@ import on.logistics.hubtransitservice.application.dtos.create.CreateNextHubTrans
 import on.logistics.hubtransitservice.application.dtos.read.GetHubTransitResponseDto;
 import on.logistics.hubtransitservice.application.dtos.read.NextHubTransitRequestDto;
 import on.logistics.hubtransitservice.application.dtos.read.NextHubTransitResponseDto;
-import on.logistics.hubtransitservice.application.dtos.read.SearchHubTransitRequestDto;
 import on.logistics.hubtransitservice.application.dtos.read.SearchHubTransitResponseDto;
 import on.logistics.hubtransitservice.application.dtos.update.UpdateHubTransitRequestDto;
 import on.logistics.hubtransitservice.application.dtos.update.UpdateHubTransitResponseDto;
@@ -24,8 +23,7 @@ public interface HubTransitService {
 
     GetHubTransitResponseDto getHubTransit(UUID transitId);
 
-    Page<SearchHubTransitResponseDto> searchHubTransit(SearchHubTransitRequestDto requestDto,
-        Pageable pageable);
+    Page<SearchHubTransitResponseDto> searchHubTransit(String keyword, Pageable pageable);
 
     NextHubTransitResponseDto getNextHubTransit(NextHubTransitRequestDto requestDto);
 

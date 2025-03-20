@@ -36,59 +36,60 @@ public class HubTransit extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(name = "delivery_id", nullable = false)
+    private UUID deliveryId;
+
+    @Embedded
+    private InitialStartHubName initialStartHubName;
+    @Embedded
+    private InitialEndHubName initialEndHubName;
+
     @Column(name = "current_hub_id", nullable = false)
     private UUID currentHubId;
-
     @Embedded
     private CurrentHubName currentHubName;
 
     @Column(name = "next_hub_id", nullable = false)
     private UUID nextHubId;
-
     @Embedded
     private NextHubName nextHubName;
 
-    @Column(name = "delivery_id", nullable = false)
-    private UUID deliveryId;
+    @Column(name = "next_dest_type", nullable = false)
+    private String nextDestType;
 
-    @Column(name = "delivery_manager_id", nullable = false)
+    @Column(name = "delivery_manager_id")
     private UUID deliveryManagerId;
 
-    @Embedded
-    private InitialStartHubName initialStartHubName;
-
-    @Embedded
-    private InitialEndHubName initialEndHubName;
 
     public static HubTransit create(CreateHubTransitDto dto) {
         return HubTransit.builder()
+            .deliveryId(dto.deliveryId())
+            .initialStartHubName(new InitialStartHubName(dto.startHubName()))
+            .initialEndHubName(new InitialEndHubName(dto.endHubName()))
             .currentHubId(dto.startHubId())
             .currentHubName(new CurrentHubName(dto.startHubName()))
             .nextHubId(dto.endHubId())
             .nextHubName(new NextHubName(dto.endHubName()))
-            .deliveryId(dto.deliveryId())
-            .deliveryManagerId(dto.deliveryManagerId())
-            .initialStartHubName(new InitialStartHubName(dto.startHubName()))
-            .initialEndHubName(new InitialEndHubName(dto.endHubName()))
+            .deliveryManagerId(null)
             .build();
     }
 
     public static HubTransit createNext(
         HubTransit currentTransit,
-        UUID newCurrentHubId,
-        String newCurrentHubName,
         UUID newNextHubId,
         String newNextHubName,
-        UUID newDeliveryManagerId) {
+        String newNextDestType
+    ) {
         return HubTransit.builder()
-            .currentHubId(newCurrentHubId)
-            .currentHubName(new CurrentHubName(newCurrentHubName))
             .deliveryId(currentTransit.getDeliveryId())
-            .deliveryManagerId(newDeliveryManagerId)
             .initialStartHubName(currentTransit.getInitialStartHubName())
             .initialEndHubName(currentTransit.getInitialEndHubName())
+            .currentHubId(currentTransit.getNextHubId())
+            .currentHubName(new CurrentHubName(currentTransit.getNextHubName().getValue()))
             .nextHubId(newNextHubId)
             .nextHubName(new NextHubName(newNextHubName))
+            .nextDestType(newNextDestType)
+            .deliveryManagerId(null)
             .build();
     }
 

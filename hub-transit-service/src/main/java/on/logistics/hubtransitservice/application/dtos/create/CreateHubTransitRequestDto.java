@@ -3,42 +3,32 @@ package on.logistics.hubtransitservice.application.dtos.create;
 import java.util.UUID;
 
 public record CreateHubTransitRequestDto(
-    UUID startHubId,
-    UUID endHubId,
     UUID deliveryId,
+    UUID startHubId,
     String startHubName,
+    UUID endHubId,
     String endHubName,
-    UUID deliveryManagerId
+    UUID nextHubId,
+    String nextHubName,
+    String nextDestType
 ) {
 
-    public static CreateHubTransitRequestDto of(
-        UUID startHubId,
-        UUID endHubId,
-        UUID deliveryId,
+    public CreateHubTransitRequestDto withInitialHubInfo(
         String startHubName,
         String endHubName,
-        UUID deliveryManagerId
+        UUID nextHubId,
+        String nextHubName,
+        String nextDestType
     ) {
         return new CreateHubTransitRequestDto(
-            startHubId,
-            endHubId,
-            deliveryId,
-            startHubName,
-            endHubName,
-            deliveryManagerId
-        );
-    }
-
-    public CreateHubTransitRequestDto withHubNameAndManager(String startHubName,
-        String endHubName, UUID deliveryManagerId
-    ) {
-        return new CreateHubTransitRequestDto(
-            this.startHubId,
-            this.endHubId,
             this.deliveryId,
+            this.startHubId,
             startHubName,
+            this.endHubId,
             endHubName,
-            deliveryManagerId
+            nextHubId,
+            nextHubName,
+            nextDestType
         );
     }
 

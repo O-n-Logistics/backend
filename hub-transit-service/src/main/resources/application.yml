@@ -4,18 +4,35 @@ server:
 spring:
   application:
     name: hub-transit-service
+  datasource:
+    url: ENC(kYPYN9IU5fC27nINEB4BDxgfpwjH88DNPQmn/KaElMSmXoSy49z9CFEiLt1haYjP2bchik6aREU=)
+    username: ENC(ugicKpQxJTRwWL2uJlHsHcnE1IoFxlpw)
+    password: ENC(w/Uvf6+6YwWFLqbPrkYK/Il7BQapHT3x)
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        #        format_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+    #        show_sql: true
+    open-in-view: false
+    defer-datasource-initialization: true
   cloud:
     discovery:
       enabled: true
-  profiles:
-    active: dev
 
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://eureka-server:8761/eureka/
+      defaultZone: ENC(pE+ObRJ5vJodpHwNRvnO+k3uBqCCklUVcZyXZs5xp+PuM5PhYeD4KA==)
   instance:
     prefer-ip-address: true
 
@@ -26,3 +43,9 @@ logging:
 jasypt:
   encryptor:
     password: ${jasypt.encryptor.password}
+
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
