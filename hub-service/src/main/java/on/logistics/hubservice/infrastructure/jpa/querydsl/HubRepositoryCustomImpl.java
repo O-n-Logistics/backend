@@ -1,5 +1,6 @@
 package on.logistics.hubservice.infrastructure.jpa.querydsl;
 
+import static on.logistics.hubservice.domain.entity.QCenterSpokeHubLink.centerSpokeHubLink;
 import static on.logistics.hubservice.domain.entity.QHub.hub;
 
 import com.querydsl.core.types.Order;
@@ -8,11 +9,14 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import on.logistics.hubservice.application.dtos.request.SearchHubRequestDto;
 import on.logistics.hubservice.domain.entity.HubType;
 import on.logistics.hubservice.global.application.dtos.PageDto;
 import on.logistics.hubservice.global.enums.PageSortBy;
+import on.logistics.hubservice.presentation.dtos.response.GetSpokesLinkedToCenterResponse;
+import on.logistics.hubservice.presentation.dtos.response.QGetSpokesLinkedToCenterResponse;
 import on.logistics.hubservice.presentation.dtos.response.QSearchHubResponse;
 import on.logistics.hubservice.presentation.dtos.response.SearchHubResponse;
 import org.springframework.data.domain.Sort;
@@ -33,6 +37,22 @@ public class HubRepositoryCustomImpl implements HubRepositoryCustom {
         int totalPages = getTotalPages(totalElement, requestDto);
 
         return new PageDto<>(content, last, totalPages, totalElement);
+    }
+
+    @Override
+    public List<GetSpokesLinkedToCenterResponse> getSpokesLinkedToCenter(UUID centerId) {
+        return jpaQueryFactory.select(new QGetSpokesLinkedToCenterResponse(
+                centerSpokeHubLink.spoke.id,
+                centerSpokeHubLink.spoke.name.value,
+                centerSpokeHubLink.spoke.type.stringValue(),
+                centerSpokeHubLink.spoke.address.value,
+                centerSpokeHubLink.spoke.latitude,
+                centerSpokeHubLink.spoke.longitude
+            ))
+            .from(centerSpokeHubLink)
+            .join(hub).on(centerSpokeHubLink.spoke.id.eq(hub.id))
+            .where(centerSpokeHubLink.center.id.eq(centerId))
+            .fetch();
     }
 
     private List<SearchHubResponse> getHubs(SearchHubRequestDto requestDto) {

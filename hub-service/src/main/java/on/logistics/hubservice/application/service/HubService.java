@@ -1,8 +1,11 @@
 package on.logistics.hubservice.application.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import on.logistics.hubservice.application.clients.map.MapServiceClient;
+import on.logistics.hubservice.application.clients.map.feign.dtos.GetGeocodeResponse;
 import on.logistics.hubservice.application.dtos.request.CreateHubRequestDto;
 import on.logistics.hubservice.application.dtos.request.SearchHubRequestDto;
 import on.logistics.hubservice.application.dtos.request.UpdateHubRequestDto;
@@ -13,6 +16,7 @@ import on.logistics.hubservice.exception.HubExceptionCode;
 import on.logistics.hubservice.global.application.dtos.PageDto;
 import on.logistics.hubservice.presentation.dtos.response.CreateHubResponse;
 import on.logistics.hubservice.presentation.dtos.response.GetHubResponse;
+import on.logistics.hubservice.presentation.dtos.response.GetSpokesLinkedToCenterResponse;
 import on.logistics.hubservice.presentation.dtos.response.SearchHubResponse;
 import on.logistics.hubservice.presentation.dtos.response.UpdateHubResponse;
 import org.springframework.stereotype.Service;
@@ -23,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class HubService {
 
     private final HubRepository hubRepository;
+    private final MapServiceClient mapServiceClient;
 
     @Transactional(readOnly = true)
     public GetHubResponse getHub(final UUID id) {
@@ -38,9 +43,9 @@ public class HubService {
 
     @Transactional
     public CreateHubResponse createHub(CreateHubRequestDto requestDto) {
-        // TODO: 추후 네이버 API로 실제 좌표로 수정해야함
-        BigDecimal latitude = new BigDecimal("37.5563");
-        BigDecimal longitude = new BigDecimal("126.9707");
+        GetGeocodeResponse geocodeResponse = mapServiceClient.getGeocode(requestDto.hubAddress());
+        BigDecimal latitude = new BigDecimal(geocodeResponse.latitude());
+        BigDecimal longitude = new BigDecimal(geocodeResponse.longitude());
         Hub hub = Hub.create(requestDto, latitude, longitude);
         Hub savedHub = hubRepository.save(hub);
         return CreateHubResponse.of(savedHub.getId());
@@ -57,6 +62,13 @@ public class HubService {
     public void deleteHub(final UUID id) {
         Hub hub = findHubById(id);
         hub.delete();
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetSpokesLinkedToCenterResponse> getSpokesLinkedToCenter(final UUID centerId) {
+        Hub centerHub = findHubById(centerId);
+        final var response = hubRepository.findSpokesLinkedToCenter(centerHub.getId());
+        return response;
     }
 
     private Hub findHubById(UUID id) {

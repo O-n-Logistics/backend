@@ -1,6 +1,7 @@
 package on.logistics.hubservice.presentation;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import on.logistics.hubservice.application.dtos.request.CreateHubRequestDto;
@@ -14,6 +15,7 @@ import on.logistics.hubservice.presentation.dtos.request.CreateHubRequest;
 import on.logistics.hubservice.presentation.dtos.request.UpdateHubRequest;
 import on.logistics.hubservice.presentation.dtos.response.CreateHubResponse;
 import on.logistics.hubservice.presentation.dtos.response.GetHubResponse;
+import on.logistics.hubservice.presentation.dtos.response.GetSpokesLinkedToCenterResponse;
 import on.logistics.hubservice.presentation.dtos.response.SearchHubResponse;
 import on.logistics.hubservice.presentation.dtos.response.UpdateHubResponse;
 import org.springframework.data.domain.Pageable;
@@ -72,5 +74,12 @@ public class HubController {
     ResponseEntity<CommonResponse<Void>> deleteHub(@PathVariable UUID id) {
         hubService.deleteHub(id);
         return ResponseEntity.ok(CommonResponse.success());
+    }
+
+    @GetMapping("/link")
+    ResponseEntity<CommonResponse<List<GetSpokesLinkedToCenterResponse>>> getSpokesLinkedToCenter(
+        @RequestParam UUID centerId) {
+        final var responseDto = hubService.getSpokesLinkedToCenter(centerId);
+        return ResponseEntity.ok(CommonResponse.success(responseDto));
     }
 }
