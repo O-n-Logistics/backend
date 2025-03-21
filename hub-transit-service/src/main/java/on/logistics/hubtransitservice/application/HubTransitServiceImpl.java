@@ -171,7 +171,7 @@ public class HubTransitServiceImpl implements HubTransitService {
         if (hubResponse == null) {
             throw new HubTransitException(HubTransitExceptionCode.HUB_TRANSIT_NOT_FOUND);
         }
-        return new HubInfo(hubResponse.id(), hubResponse.name(), hubResponse.type());
+        return new HubInfo(hubResponse.id(), hubResponse.hubName(), hubResponse.hubType());
     }
 
     private Route getRouteByHubNames(String startHubName, String endHubName) {
@@ -210,7 +210,7 @@ public class HubTransitServiceImpl implements HubTransitService {
         return "END_OF_HUB".equals(nextHubName) ? "COMPANY" : "HUB";
     }
 
-    private record HubInfo(UUID id, String name, String type) {
+    private record HubInfo(UUID id, String name, String hubType) {
 
     }
 

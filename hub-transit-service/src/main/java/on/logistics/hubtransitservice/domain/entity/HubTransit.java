@@ -54,7 +54,7 @@ public class HubTransit extends BaseEntity {
     @Embedded
     private NextHubName nextHubName;
 
-    @Column(name = "next_dest_type", nullable = false)
+    @Column(name = "next_dest_type")
     private String nextDestType;
 
     @Column(name = "delivery_manager_id")
@@ -68,8 +68,9 @@ public class HubTransit extends BaseEntity {
             .initialEndHubName(new InitialEndHubName(dto.endHubName()))
             .currentHubId(dto.startHubId())
             .currentHubName(new CurrentHubName(dto.startHubName()))
-            .nextHubId(dto.endHubId())
-            .nextHubName(new NextHubName(dto.endHubName()))
+            .nextHubId(dto.nextHubId())
+            .nextHubName(new NextHubName(dto.nextHubName()))
+            .nextDestType(dto.nextDestType())
             .deliveryManagerId(null)
             .build();
     }

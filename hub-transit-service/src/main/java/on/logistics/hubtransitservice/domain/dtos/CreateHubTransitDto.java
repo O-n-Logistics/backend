@@ -8,7 +8,10 @@ public record CreateHubTransitDto(
     UUID startHubId,
     String startHubName,
     UUID endHubId,
-    String endHubName
+    String endHubName,
+    UUID nextHubId,
+    String nextHubName,
+    String nextDestType
 ) {
 
     public static CreateHubTransitDto of(CreateHubTransitRequestDto dto) {
@@ -17,7 +20,10 @@ public record CreateHubTransitDto(
             dto.startHubId(),
             dto.startHubName(),
             dto.endHubId(),
-            dto.endHubName()
+            dto.endHubName(),
+            dto.nextHubId(),
+            dto.nextHubName(),
+            dto.nextDestType()
         );
     }
 

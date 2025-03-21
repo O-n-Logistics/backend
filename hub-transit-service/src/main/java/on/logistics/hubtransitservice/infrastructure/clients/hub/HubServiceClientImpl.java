@@ -34,8 +34,8 @@ public class HubServiceClientImpl implements HubServiceClient {
 
     @Override
     public GetHubResponse getHubByName(String hubName) {
-        log.info("허브 전체 조회 요청, filtering by hubName: {}", hubName);
-        Response response = hubServiceFeignClient.getAllHubs();
+        log.info("허브 검색 요청, keyword: {}", hubName);
+        Response response = hubServiceFeignClient.searchHubs(hubName);
         try (InputStream inputStream = response.body().asInputStream()) {
             CommonResponse<PageDto<GetHubResponse>> commonResponse = objectMapper.readValue(
                 inputStream, new TypeReference<>() {
@@ -44,7 +44,7 @@ public class HubServiceClientImpl implements HubServiceClient {
             PageDto<GetHubResponse> pageDto = commonResponse.data();
             if (pageDto != null) {
                 return pageDto.content().stream()
-                    .filter(hub -> hub.name().equals(hubName))
+                    .filter(hub -> hub.hubName().equals(hubName))
                     .findFirst()
                     .orElse(null);
             }

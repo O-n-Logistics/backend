@@ -4,10 +4,11 @@ import java.util.UUID;
 
 public record GetHubResponse(
     UUID id,
-    String name,
-    String type,
+    String hubName,
+    String hubType,
     String address,
-    String latitude
+    String latitude,
+    String longitude
 ) {
 
 }
