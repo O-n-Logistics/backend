@@ -28,6 +28,11 @@ public class AuthRepositoryImpl implements AuthRepository, AuthQueryDslRepositor
     }
 
     @Override
+    public Optional<Auth> findByUserId(UUID userId) {
+        return authJpaRepository.findByUserId(userId);
+    }
+
+    @Override
     public Optional<Auth> findByUsername(Username username) {
         return authJpaRepository.findByUsername(username);
     }
@@ -35,5 +40,10 @@ public class AuthRepositoryImpl implements AuthRepository, AuthQueryDslRepositor
     @Override
     public boolean existsByUsername(Username username) {
         return authJpaRepository.existsByUsername(username);
+    }
+
+    @Override
+    public void delete(Auth auth) {
+        authJpaRepository.delete(auth);
     }
 }

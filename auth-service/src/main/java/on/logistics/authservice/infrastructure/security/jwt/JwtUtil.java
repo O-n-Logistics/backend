@@ -89,7 +89,7 @@ public class JwtUtil {
         return null;
     }
 
-    public void validateToken(String token) {
+    public boolean validateToken(String token) {
         if (isTokenBlacklisted(token)) {
             throw new JwtException(JwtExceptionCode.JWT_INVALID_TOKEN);
         }
@@ -101,7 +101,7 @@ public class JwtUtil {
             throw new JwtException(JwtExceptionCode.JWT_INVALID_TOKEN);
         } catch (ExpiredJwtException e) {
             log.error(e.getMessage());
-            throw new JwtException(JwtExceptionCode.JWT_EXPIRED_TOKEN);
+            return false;
         } catch (UnsupportedJwtException e) {
             log.error(e.getMessage());
             throw new JwtException(JwtExceptionCode.JWT_UNSUPPORTED_TOKEN);
@@ -109,6 +109,8 @@ public class JwtUtil {
             log.error(e.getMessage());
             throw new JwtException(JwtExceptionCode.JWT_CLAIMS_IS_EMPTY);
         }
+
+        return true;
     }
 
     public Claims getUserInfoFromToken(String token) {

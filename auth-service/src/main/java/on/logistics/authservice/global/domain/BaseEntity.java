@@ -5,6 +5,7 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PreRemove;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -24,20 +25,20 @@ public abstract class BaseEntity {
     private LocalDateTime createdAt;
 
     @Column(name = "created_by", updatable = false)
-    private Long createdBy;
+    private UUID createdBy;
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @Column(name = "updated_by")
-    private Long updatedBy;
+    private UUID updatedBy;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
     @Column(name = "deleted_by")
-    private Long deletedBy;
+    private UUID deletedBy;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted = false;
@@ -55,8 +56,8 @@ public abstract class BaseEntity {
         }
     }
 
-    public void create() {
-        createdBy = 1L;
-        updatedBy = 1L;
+    public void setId(UUID id) {
+        this.createdBy = id;
+        this.updatedBy = id;
     }
 }

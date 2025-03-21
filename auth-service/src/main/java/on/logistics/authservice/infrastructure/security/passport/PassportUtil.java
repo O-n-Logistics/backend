@@ -26,18 +26,20 @@ public class PassportUtil {
         return PASSPORT_KEY_PREFIX + key;
     }
 
-    public void createPassport(String token, Passport passport, long ttlSeconds) {
+    public String createPassport(String token, Passport passport, long ttlSeconds) {
         try {
             String json = objectMapper.writeValueAsString(passport);
-            redisTemplate.opsForValue().set(getPassportKey(token), json, ttlSeconds,
+            String passportId = getPassportKey(token);
+            redisTemplate.opsForValue().set(passportId, json, ttlSeconds,
                 TimeUnit.SECONDS);
+            return passportId;
         } catch (JsonProcessingException e) {
             log.error(e.getMessage(), e);
             throw new PassportException(PassportExceptionCode.PASSPORT_CREATION_FAILED);
         }
     }
 
-    public Passport getPassportByToken(String token) {
+    public Passport getPassportByRefreshToken(String token) {
         String json = redisTemplate.opsForValue().get(getPassportKey(token));
         if (json == null) {
             return null;
@@ -50,12 +52,12 @@ public class PassportUtil {
         }
     }
 
-    public String getPassportKeyByToken(String token) {
+    public String getPassportKeyByRefreshToken(String token) {
         return getPassportKey(token);
     }
 
-    public Passport getPassportByKey(String passportKey) {
-        String json = redisTemplate.opsForValue().get(passportKey);
+    public Passport getPassportById(String passportId) {
+        String json = redisTemplate.opsForValue().get(passportId);
         if (json == null) {
             return null;
         }
@@ -76,6 +78,20 @@ public class PassportUtil {
     }
 
     public boolean isAuthenticated(String token) {
-        return getPassportByToken(token) != null;
+        return getPassportByRefreshToken(token) != null;
+    }
+
+    public void expirePassportByRefreshToken(String refreshToken, long passportExpireAfterSeconds) {
+        Passport passport = getPassportByRefreshToken(refreshToken);
+
+        if (passport == null) {
+            throw new PassportException(PassportExceptionCode.PASSPORT_RETRIEVAL_FAILED);
+        }
+
+        updatePassport(refreshToken, passport, passportExpireAfterSeconds);
+    }
+
+    public void deletePassportByPassportId(String passportId) {
+        redisTemplate.delete(passportId);
     }
 }

@@ -7,12 +7,12 @@ spring:
   data:
     redis:
       host: ENC(WCP+8mkysXzEV+eZ1E5A9+XQsysXwDwz)
-      port: 6379
+      port: 16371
       username: ENC(hK+1LVIhvsPYxTR80FgHp15Fhz64VZWX)
       password: ENC(hK+1LVIhvsPYxTR80FgHp15Fhz64VZWX)
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/onlogistics
+    url: jdbc:postgresql://localhost:15431/onlogistics
     username: ENC(SzFNDgC//YBbb9TJ7Bne4Cv1KM24A8WX)
     password: ENC(SzFNDgC//YBbb9TJ7Bne4Cv1KM24A8WX)
 
@@ -30,9 +30,10 @@ jwt:
     expiration: 3600000 # 60 * 60 * 1000, 1시간
 
 passport:
-  expiration: 3600000 # 60 * 60 * 1000, 1시간
+  expiration:
+    generation: 3600000 # 60 * 60 * 1000, 1시간
+    expected: 60000 # 60 * 1000, 1분
 
-eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/

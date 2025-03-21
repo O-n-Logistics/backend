@@ -10,5 +10,7 @@ public interface AuthJpaRepository extends JpaRepository<Auth, UUID> {
 
     Optional<Auth> findByUsername(Username username);
 
+    Optional<Auth> findByUserId(UUID userId);
+
     boolean existsByUsername(Username username);
 }

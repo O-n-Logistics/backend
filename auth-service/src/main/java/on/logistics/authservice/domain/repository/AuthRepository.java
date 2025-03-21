@@ -11,7 +11,11 @@ public interface AuthRepository {
 
     Optional<Auth> findById(UUID uuid);
 
+    Optional<Auth> findByUserId(UUID userId);
+
     Optional<Auth> findByUsername(Username username);
 
     boolean existsByUsername(Username username);
+
+    void delete(Auth auth);
 }

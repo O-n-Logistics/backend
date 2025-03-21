@@ -6,13 +6,13 @@ import on.logistics.authservice.domain.vo.Username;
 
 @Builder
 public record AuthSignupResponse(
-    Username username,
+    String username,
     String nickname
 ) {
 
     public static AuthSignupResponse from(AuthSignupResponseDto dto) {
         return new AuthSignupResponse(
-            dto.username(),
+            dto.username().toString(),
             dto.nickname()
         );
     }

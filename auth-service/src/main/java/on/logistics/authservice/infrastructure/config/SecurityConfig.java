@@ -1,9 +1,9 @@
 package on.logistics.authservice.infrastructure.config;
 
 import lombok.RequiredArgsConstructor;
-import on.logistics.authservice.infrastructure.security.details.AuthDetailsServiceImpl;
 import on.logistics.authservice.application.PassportService;
 import on.logistics.authservice.infrastructure.security.cookie.CookieUtil;
+import on.logistics.authservice.infrastructure.security.details.AuthDetailsServiceImpl;
 import on.logistics.authservice.infrastructure.security.jwt.JwtAuthenticationFilter;
 import on.logistics.authservice.infrastructure.security.jwt.JwtAuthorizationFilter;
 import on.logistics.authservice.infrastructure.security.jwt.JwtUtil;
@@ -58,6 +58,7 @@ public class SecurityConfig {
             .jwtUtil(jwtUtil)
             .cookieUtil(cookieUtil)
             .authDetailsService(authDetailsService)
+            .passportService(passportService)
             .build();
     }
 
@@ -69,12 +70,12 @@ public class SecurityConfig {
             .sessionManagement(
                 session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                    .requestMatchers(
-                        "/", "/api/v1/auth/signup", "/api/v1/auth/login"
-                    )
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated()
+                .requestMatchers(
+                    "/", "/api/v1/auth/signup", "/api/v1/auth/login"
+                )
+                .permitAll()
+                .anyRequest()
+                .authenticated()
             )
             .addFilterBefore(jwtAuthentiactionFilter(), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);

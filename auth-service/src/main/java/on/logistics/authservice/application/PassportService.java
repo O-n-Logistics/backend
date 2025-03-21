@@ -5,9 +5,19 @@ import on.logistics.authservice.infrastructure.security.passport.Passport;
 
 public interface PassportService {
 
-    void createAndStorePassport(String token, UUID userId);
+    Passport getPassportByPassportId(String passportId);
 
-    String getPassportIdByToken(String token);
+    String createAndStorePassport(String token, UUID userId);
 
-    Passport getPassportByToken(String token);
+    String getPassportIdByRefreshToken(String token);
+
+    Passport getPassportByRefreshToken(String token);
+
+    void expirePassportByRefreshToken(String refreshToken);
+
+    void deletePassportByRefreshToken(String refreshToken);
+
+    String createAndStoreNewPassportByRefreshToken(String refreshToken, String newRefreshToken);
+
+    void deletePassportByPassportId(String passportId);
 }
