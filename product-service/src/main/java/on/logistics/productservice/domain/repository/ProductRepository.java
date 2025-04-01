@@ -1,5 +1,6 @@
 package on.logistics.productservice.domain.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import on.logistics.productservice.application.dto.SearchProductRequestDto;
@@ -12,8 +13,9 @@ public interface ProductRepository {
 
     Page<Product> searchProduct(SearchProductRequestDto requestDto);
 
-    Optional<Product> findById(UUID uuid);
+    Optional<Product> findAllById(UUID uuid);
+
+    List<Product> findAllById(List<UUID> productIds);
 
     void delete(Product product);
-
 }

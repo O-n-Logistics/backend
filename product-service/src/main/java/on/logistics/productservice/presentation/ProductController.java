@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import on.logistics.productservice.application.dto.CreateProductRequestDto;
+import on.logistics.productservice.application.dto.DecreaseAllProductQuantityRequestDto;
 import on.logistics.productservice.application.dto.SearchProductRequestDto;
 import on.logistics.productservice.application.dto.UpdateIncreaseProductQuantityRequestDto;
 import on.logistics.productservice.application.dto.UpdateProductRequestDto;
@@ -13,6 +14,7 @@ import on.logistics.productservice.application.service.ProductService;
 import on.logistics.productservice.global.application.dtos.PageDto;
 import on.logistics.productservice.global.presentation.dtos.CommonResponse;
 import on.logistics.productservice.presentation.dtos.request.CreateProductRequest;
+import on.logistics.productservice.presentation.dtos.request.DecreaseAllProductQuantityRequest;
 import on.logistics.productservice.presentation.dtos.request.UpdateIncreaseProductQuantityRequest;
 import on.logistics.productservice.presentation.dtos.request.UpdateProductRequest;
 import on.logistics.productservice.presentation.dtos.request.UpdateReduceProductQuantityRequest;
@@ -105,5 +107,15 @@ public class ProductController {
         UpdateIncreaseProductQuantityResponse response = productService.updateIncreaseProductQuantity(
             requestDto);
         return ResponseEntity.ok(CommonResponse.success(response));
+    }
+
+    @PutMapping("/reduce/quantity/all")
+    public ResponseEntity<CommonResponse<Void>> updateDecreaseAllProductQuantity(
+        @Valid @RequestBody DecreaseAllProductQuantityRequest updateReduceProductQuantityRequest
+    ) {
+        var requestDto = DecreaseAllProductQuantityRequestDto.from(
+            updateReduceProductQuantityRequest);
+        productService.updateDecreaseAllProductQuantity(requestDto);
+        return ResponseEntity.ok(CommonResponse.success());
     }
 }

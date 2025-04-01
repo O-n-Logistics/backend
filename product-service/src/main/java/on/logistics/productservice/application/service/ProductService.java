@@ -3,6 +3,7 @@ package on.logistics.productservice.application.service;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.UUID;
 import on.logistics.productservice.application.dto.CreateProductRequestDto;
+import on.logistics.productservice.application.dto.DecreaseAllProductQuantityRequestDto;
 import on.logistics.productservice.application.dto.SearchProductRequestDto;
 import on.logistics.productservice.application.dto.UpdateIncreaseProductQuantityRequestDto;
 import on.logistics.productservice.application.dto.UpdateProductRequestDto;
@@ -35,4 +36,7 @@ public interface ProductService {
 
     UpdateReduceProductQuantityResponse updateApiReduceProductQuantity(
         UpdateReduceProductQuantityRequestDto requestDto);
+
+    void updateDecreaseAllProductQuantity(
+        DecreaseAllProductQuantityRequestDto requestDto);
 }
