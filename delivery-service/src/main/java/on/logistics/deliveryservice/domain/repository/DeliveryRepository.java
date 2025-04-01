@@ -1,5 +1,6 @@
 package on.logistics.deliveryservice.domain.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import on.logistics.deliveryservice.application.dtos.request.SearchDeliveryRequestDto;
@@ -15,4 +16,6 @@ public interface DeliveryRepository {
     void delete(Delivery delivery);
 
     Page<Delivery> searchDelivery(SearchDeliveryRequestDto requestDto);
+
+    List<Delivery> findAllById(List<UUID> deliveryIds);
 }
