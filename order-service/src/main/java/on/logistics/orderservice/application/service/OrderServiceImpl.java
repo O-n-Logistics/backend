@@ -55,6 +55,7 @@ import on.logistics.orderservice.infrastructure.clients.exception.ExternalApiExc
 import on.logistics.orderservice.infrastructure.clients.hub.dtos.GetHubByIdResponseDto;
 import on.logistics.orderservice.infrastructure.clients.hub.dtos.GetHubManagerIdResponse;
 import on.logistics.orderservice.infrastructure.clients.hub.dtos.ValidateHubManagerResponseDto;
+import on.logistics.orderservice.infrastructure.clients.product.dtos.DecreaseAllProductStockRequestDto;
 import on.logistics.orderservice.infrastructure.clients.product.dtos.DecreaseProductStockRequestDto;
 import on.logistics.orderservice.infrastructure.clients.product.dtos.RollbackDecreaseProductStockRequestDto;
 import on.logistics.orderservice.infrastructure.clients.slack.dtos.SendMessageRequestDto;
@@ -98,10 +99,28 @@ public class OrderServiceImpl implements OrderService {
         log.info("생성된 주문 저장: {}", createdOrder);
         Order savedOrder = orderRepository.save(createdOrder);
 
+        List<OrderProduct> allProducts = new ArrayList<>();
+        savedOrder.getVendorOrders()
+            .forEach(vendorOrder -> allProducts.addAll(vendorOrder.getOrderProducts()));
+        tryDecreaseAllProductStock(allProducts);
+
         vendorOrders.forEach(this::tryRequestDelivery);
         vendorOrders.forEach(this::trySendMessageToHubManager);
 
         return CreateOrderResponseDto.from(savedOrder);
+    }
+
+    private void tryDecreaseAllProductStock(final List<OrderProduct> allProducts) {
+        try {
+            productService.decreaseAllProductStock(
+                DecreaseAllProductStockRequestDto.from(allProducts));
+        } catch (ExternalApiBadRequestException e) {
+            log.warn("주문 상품 재고 감소 요청 데이터 오류: {}", e.getMessage());
+            throw new OutOfStockProductOrderException();
+        } catch (ExternalApiException e) {
+            log.warn("주문 상품 재고 감소 중 오류 발생: {}", e.getMessage());
+            throw e;
+        }
     }
 
     private Orderer createOrderer(
@@ -178,10 +197,9 @@ public class OrderServiceImpl implements OrderService {
         log.info("주문 상품 목록 생성");
 
         List<OrderProduct> orderProducts = new ArrayList<>();
-        List<OrderProduct> reducedProductStocks = new ArrayList<>();
         for (OrderedProduct orderedProduct : ordersByVendor.orderItems()) {
             OrderProduct orderProduct = createOrderProduct(
-                createdVendorOrder, orderedProduct, reducedProductStocks);
+                createdVendorOrder, orderedProduct);
             orderProducts.add(orderProduct);
         }
         return orderProducts;
@@ -189,17 +207,12 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderProduct createOrderProduct(
         final VendorOrder vendorOrder,
-        final OrderedProduct orderedProduct,
-        final List<OrderProduct> reducedProductStocks
+        final OrderedProduct orderedProduct
     ) {
         log.info("주문 상품 엔티티 생성");
 
         var createOrderProductDto = CreateOrderProductDto.of(vendorOrder, orderedProduct);
-        OrderProduct createdOrderProduct = OrderProduct.create(createOrderProductDto);
-
-        tryDecreaseProductStock(createdOrderProduct, reducedProductStocks);
-
-        return createdOrderProduct;
+        return OrderProduct.create(createOrderProductDto);
     }
 
     private GenerateShippingDeadlineResponse tryGenerateShippingDeadline(
@@ -213,29 +226,6 @@ public class OrderServiceImpl implements OrderService {
             log.warn("배송 예상일 생성 중 오류 발생: {}", e.getMessage());
             throw e;
         }
-    }
-
-    private void tryDecreaseProductStock(
-        final OrderProduct orderProduct,
-        final List<OrderProduct> reducedProductStocks
-    ) {
-        try {
-            decreaseProductStock(orderProduct);
-            reducedProductStocks.add(orderProduct);
-        } catch (ExternalApiBadRequestException e) {
-            log.warn("주문 상품 재고 감소 요청 데이터 오류: {}", e.getMessage());
-            throw new OutOfStockProductOrderException();
-        } catch (ExternalApiException e) {
-            log.warn("주문 상품 재고 감소 중 오류 발생: {}", e.getMessage());
-            reducedProductStocks.forEach(this::rollbackDecreaseProductStock);
-            throw e;
-        }
-    }
-
-    private void decreaseProductStock(final OrderProduct orderProduct) {
-        log.info("주문할 상품 재고 감소");
-        var requestDto = DecreaseProductStockRequestDto.from(orderProduct);
-        productService.decreaseProductStock(requestDto);
     }
 
     private void tryRequestDelivery(final VendorOrder vendorOrder) {

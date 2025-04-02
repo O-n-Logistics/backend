@@ -2,12 +2,14 @@ package on.logistics.deliveryservice.application.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.UUID;
+import on.logistics.deliveryservice.application.dtos.request.CreateAllDeliveryRequestDto;
 import on.logistics.deliveryservice.application.dtos.request.CreateDeliveryRequestDto;
 import on.logistics.deliveryservice.application.dtos.request.SearchDeliveryRequestDto;
 import on.logistics.deliveryservice.application.dtos.request.UpdateAssignManagerRequestDto;
 import on.logistics.deliveryservice.application.dtos.request.UpdateDeliveryRequestDto;
 import on.logistics.deliveryservice.domain.entity.Delivery;
 import on.logistics.deliveryservice.global.application.dtos.PageDto;
+import on.logistics.deliveryservice.presentation.dtos.CreateAllDeliveryResponse;
 import on.logistics.deliveryservice.presentation.dtos.response.CreateDeliveryResponse;
 import on.logistics.deliveryservice.presentation.dtos.response.GetDeliveryResponse;
 import on.logistics.deliveryservice.presentation.dtos.response.SearchDeliveryResponse;
@@ -54,5 +56,10 @@ public interface DeliveryService {
     CreateDeliveryResponse createApiDelivery(CreateDeliveryRequestDto requestDto);
 
     void rollbackDeleteDelivery(UUID id);
+
     void createHubTransitRouteRequest(CreateDeliveryResponse response);
+
+    CreateAllDeliveryResponse createAllDelivery(CreateAllDeliveryRequestDto requestDto);
+
+    void createAllHubTransitRouteRequest(CreateAllDeliveryResponse request);
 }

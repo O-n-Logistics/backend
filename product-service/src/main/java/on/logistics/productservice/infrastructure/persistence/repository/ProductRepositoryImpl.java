@@ -1,5 +1,6 @@
 package on.logistics.productservice.infrastructure.persistence.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,13 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Optional<Product> findById(UUID id) {
+    public Optional<Product> findAllById(UUID id) {
         return productJpaRepository.findById(id);
+    }
+
+    @Override
+    public List<Product> findAllById(List<UUID> productIds) {
+        return productJpaRepository.findAllById(productIds);
     }
 
     @Override

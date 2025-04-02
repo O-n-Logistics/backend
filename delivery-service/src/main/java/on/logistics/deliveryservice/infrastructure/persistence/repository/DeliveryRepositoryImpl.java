@@ -1,5 +1,6 @@
 package on.logistics.deliveryservice.infrastructure.persistence.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +37,10 @@ public class DeliveryRepositoryImpl implements DeliveryRepository {
     @Override
     public Page<Delivery> searchDelivery(SearchDeliveryRequestDto requestDto) {
         return deliveryQueryRepository.searchDelivery(requestDto);
+    }
+
+    @Override
+    public List<Delivery> findAllById(List<UUID> deliveryIds) {
+        return deliveryJpaRepository.findAllById(deliveryIds);
     }
 }

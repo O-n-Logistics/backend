@@ -43,4 +43,11 @@ public class ExternalApiException extends CustomException {
             super(ExternalApiExceptionCode.WRONG_RESPONSE_TYPE);
         }
     }
+
+    public static class ExternalApiDefaultException extends ExternalApiException {
+
+        public ExternalApiDefaultException() {
+            super(ExternalApiExceptionCode.DEFAULT);
+        }
+    }
 }

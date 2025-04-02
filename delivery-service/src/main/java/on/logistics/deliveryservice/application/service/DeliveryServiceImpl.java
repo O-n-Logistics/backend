@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import on.logistics.deliveryservice.application.dtos.DeliveryHubInfoDto;
 import on.logistics.deliveryservice.application.dtos.DeliveryUserInfoDto;
+import on.logistics.deliveryservice.application.dtos.request.CreateAllDeliveryRequestDto;
+import on.logistics.deliveryservice.application.dtos.request.CreateDeliveryEntityRequestDto;
 import on.logistics.deliveryservice.application.dtos.request.CreateDeliveryRequestDto;
 import on.logistics.deliveryservice.application.dtos.request.SearchDeliveryRequestDto;
 import on.logistics.deliveryservice.application.dtos.request.UpdateAssignManagerRequestDto;
@@ -34,6 +36,7 @@ import on.logistics.deliveryservice.infrastructure.clients.hubTransit.feign.dtos
 import on.logistics.deliveryservice.infrastructure.clients.map.MapServiceClient;
 import on.logistics.deliveryservice.infrastructure.clients.map.feign.dtos.GetDestinationInfo;
 import on.logistics.deliveryservice.infrastructure.clients.map.feign.dtos.GetHubRouteInfo;
+import on.logistics.deliveryservice.presentation.dtos.CreateAllDeliveryResponse;
 import on.logistics.deliveryservice.presentation.dtos.response.CreateDeliveryResponse;
 import on.logistics.deliveryservice.presentation.dtos.response.GetDeliveryResponse;
 import on.logistics.deliveryservice.presentation.dtos.response.SearchDeliveryResponse;
@@ -68,11 +71,9 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         startHubGetOrThrow(requestDto.startHubId());
 
-        DeliveryHubInfoDto hubInfo = deliveryHubInfo(requestDto.destination());
-        DeliveryUserInfoDto userInfo = deliveryUserInfo(passport);
-        CreateDeliveryDto entityRequestDto = CreateDeliveryDto.from(requestDto, hubInfo, userInfo);
-        Delivery saved = Delivery.create(entityRequestDto);
-        deliveryRepository.save(saved);
+        CreateDeliveryEntityRequestDto entityRequestDto = CreateDeliveryEntityRequestDto.from(
+            requestDto);
+        Delivery saved = createDeliveryEntity(entityRequestDto, passport);
         return CreateDeliveryResponse.of(saved.getId());
     }
 
@@ -82,12 +83,22 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         startHubGetOrThrow(requestDto.startHubId());
 
+        CreateDeliveryEntityRequestDto entityRequestDto = CreateDeliveryEntityRequestDto.from(
+            requestDto);
+        Delivery saved = createDeliveryEntity(entityRequestDto, passport);
+        return CreateDeliveryResponse.of(saved.getId());
+    }
+
+    private Delivery createDeliveryEntity(
+        CreateDeliveryEntityRequestDto requestDto,
+        Passport passport
+    ) {
         DeliveryHubInfoDto hubInfo = deliveryHubInfo(requestDto.destination());
         DeliveryUserInfoDto userInfo = deliveryUserInfo(passport);
         CreateDeliveryDto entityRequestDto = CreateDeliveryDto.from(requestDto, hubInfo, userInfo);
         Delivery saved = Delivery.create(entityRequestDto);
         deliveryRepository.save(saved);
-        return CreateDeliveryResponse.of(saved.getId());
+        return saved;
     }
 
     @Override
@@ -300,6 +311,30 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     public void createHubTransitRouteRequest(CreateDeliveryResponse response) {
         Delivery delivery = getOrElseThrow(response.deliveryId());
+        requestHubTransit(delivery);
+    }
+
+    @Override
+    @Transactional
+    public CreateAllDeliveryResponse createAllDelivery(CreateAllDeliveryRequestDto requestDto) {
+        Passport passport = getPassport(requestDto.httpServletRequest());
+
+        List<Delivery> deliveries = requestDto.createDeliveryRequestDtos().stream().map(dto -> {
+            CreateDeliveryEntityRequestDto entityRequestDto = CreateDeliveryEntityRequestDto.from(
+                dto);
+            return createDeliveryEntity(entityRequestDto, passport);
+        }).toList();
+
+        return CreateAllDeliveryResponse.from(deliveries);
+    }
+
+    @Override
+    public void createAllHubTransitRouteRequest(CreateAllDeliveryResponse request) {
+        List<Delivery> deliveries = deliveryRepository.findAllById(request.deliveryIds());
+        deliveries.forEach(this::requestHubTransit);
+    }
+
+    private void requestHubTransit(Delivery delivery) {
         CreateHubTransitRouteRequest createHubTransitRouteRequest = CreateHubTransitRouteRequest.of(
             delivery.getStartHubId(), delivery.getEndHubId(), delivery.getId());
         try {

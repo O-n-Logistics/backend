@@ -2,6 +2,7 @@ package on.logistics.orderservice.infrastructure.clients.product.feign;
 
 import feign.Response;
 import java.util.UUID;
+import on.logistics.orderservice.infrastructure.clients.product.feign.dtos.DecreaseAllProductStockRequest;
 import on.logistics.orderservice.infrastructure.clients.product.feign.dtos.DecreaseProductStockRequest;
 import on.logistics.orderservice.infrastructure.clients.product.feign.dtos.IncreaseProductStockRequest;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -23,4 +24,7 @@ public interface ProductServiceFeignClient {
         @PathVariable UUID productId,
         @RequestBody IncreaseProductStockRequest request
     );
+
+    @PutMapping("/api/v1/product/reduce/quantity/all")
+    Response decreaseAllProductStock(@RequestBody DecreaseAllProductStockRequest request);
 }

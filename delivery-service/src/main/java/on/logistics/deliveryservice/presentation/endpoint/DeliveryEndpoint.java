@@ -4,9 +4,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import on.logistics.deliveryservice.application.dtos.request.CreateAllDeliveryRequestDto;
 import on.logistics.deliveryservice.application.dtos.request.CreateDeliveryRequestDto;
 import on.logistics.deliveryservice.application.service.DeliveryService;
 import on.logistics.deliveryservice.global.presentation.dtos.CommonResponse;
+import on.logistics.deliveryservice.presentation.dtos.request.CreateAllDeliveryRequest;
 import on.logistics.deliveryservice.presentation.dtos.request.CreateDeliveryRequest;
 import on.logistics.deliveryservice.presentation.dtos.response.CreateDeliveryResponse;
 import org.springframework.http.ResponseEntity;
@@ -33,4 +35,17 @@ public class DeliveryEndpoint {
         deliveryService.createHubTransitRouteRequest(response);
         return ResponseEntity.ok(CommonResponse.success(response));
     }
+
+    @PostMapping("/all")
+    public ResponseEntity<CommonResponse<Void>> createApiDeliveryAll(
+        @Valid @RequestBody CreateAllDeliveryRequest createDeliveryRequest,
+        HttpServletRequest httpServletRequest
+    ) {
+        final var requestDto = CreateAllDeliveryRequestDto.of(
+            createDeliveryRequest, httpServletRequest);
+        final var response = deliveryService.createAllDelivery(requestDto);
+        deliveryService.createAllHubTransitRouteRequest(response);
+        return ResponseEntity.ok(CommonResponse.success());
+    }
+
 }

@@ -14,6 +14,7 @@ public enum ExternalApiExceptionCode implements ExceptionCode {
     CLIENT_ERROR_RESPONSE(HttpStatus.BAD_REQUEST, "요청한 API에서 클라이언트 에러가 발생했습니다."),
     SERVER_ERROR_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR, "요청한 API에서 서버 에러가 발생했습니다."),
     WRONG_RESPONSE_TYPE(HttpStatus.INTERNAL_SERVER_ERROR, "요청한 API의 응답 타입이 잘못 설정되었습니다."),
+    DEFAULT(HttpStatus.INTERNAL_SERVER_ERROR, "요청한 API에서 에러가 발생했습니다."),
     ;
 
     private final HttpStatus httpStatus;

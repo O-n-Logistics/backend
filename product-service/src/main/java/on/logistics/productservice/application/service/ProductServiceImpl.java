@@ -1,10 +1,15 @@
 package on.logistics.productservice.application.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import on.logistics.productservice.application.dto.CreateProductRequestDto;
+import on.logistics.productservice.application.dto.DecreaseAllProductQuantityRequestDto;
+import on.logistics.productservice.application.dto.DecreaseAllProductQuantityRequestDto.DecreaseProductQuantityRequestDto;
 import on.logistics.productservice.application.dto.SearchProductRequestDto;
 import on.logistics.productservice.application.dto.UpdateIncreaseProductQuantityRequestDto;
 import on.logistics.productservice.application.dto.UpdateProductRequestDto;
@@ -150,6 +155,27 @@ public class ProductServiceImpl implements ProductService {
         return UpdateReduceProductQuantityResponse.of(product.getId());
     }
 
+    @Override
+    @Transactional
+    public void updateDecreaseAllProductQuantity(
+        final DecreaseAllProductQuantityRequestDto requestDto
+    ) {
+        Map<UUID, DecreaseProductQuantityRequestDto> requestDtoMap = requestDto.products()
+            .stream()
+            .collect(Collectors.toMap(DecreaseProductQuantityRequestDto::productId, dto -> dto));
+
+        List<Product> products = productRepository.findAllById(
+            requestDtoMap.keySet().stream().toList());
+
+        products.forEach(product -> {
+            var decreaseProductQuantityRequestDto = requestDtoMap.get(product.getId());
+            if (decreaseProductQuantityRequestDto == null) {
+                throw new ProductException(ProductExceptionCode.PRODUCT_IS_NOT_FOUND);
+            }
+            product.updateReduceQuantity(decreaseProductQuantityRequestDto.decreaseQuantity());
+        });
+    }
+
 
     @Override
     @Transactional
@@ -166,7 +192,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private Product getOrElseThrow(UUID id) {
-        return productRepository.findById(id)
+        return productRepository.findAllById(id)
             .orElseThrow(() -> new ProductException(ProductExceptionCode.PRODUCT_IS_NOT_FOUND));
     }
 
